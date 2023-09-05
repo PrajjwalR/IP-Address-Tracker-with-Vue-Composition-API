@@ -80,6 +80,8 @@ export default {
           lat: result.location.lat,
           lng: result.location.lng,
         };
+        leaflet.marker([ipInfo.value.lat, ipInfo.value.lng]).addTo(mymap);
+        mymap.setView([ipInfo.value.lat, ipInfo.value.lng], 9);
       } catch (err) {
         alert(err.message);
       }
