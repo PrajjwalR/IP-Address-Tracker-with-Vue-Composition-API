@@ -4,25 +4,24 @@
     <div
       class="z-20 flex justify-center relative bg-hero-pattern bg-cover px-4 pt-8 pb-32"
     >
-      <!-- Search Imput -->
+      <!-- Search Input -->
       <div class="w-full max-w-screen-sm">
         <h1 class="text-white text-center text-3xl pb-4">IP Address Tracker</h1>
         <div class="flex">
           <input
             v-model="queryIp"
-            type="text"
             class="flex-1 py-3 px-2 rounded-tl-md rounded-bl-md focus:outline-none"
-            placeholder="Search for any IP address or leave empty to get your IP info"
+            type="text"
+            placeholder="Search for any IP address or leave empty to get your ip info"
           />
-          <!-- Font awsome icon below -->
           <i
             @click="getIpInfo"
-            class="cursor-pointer bg-black text-white px-4 rounded-tr-md rounded-br-md flex items-center fa-solid fa-chevron-right"
+            class="cursor-pointer bg-black text-white px-4 rounded-tr-md rounded-br-md flex items-center fas fa-chevron-right"
           ></i>
         </div>
       </div>
       <!-- IP Info -->
-      <IPInfo v-if="ipInfo" v-bind:ipInfo="ipInfo"></IPInfo>
+      <IPInfo v-if="ipInfo" v-bind:ipInfo="ipInfo" />
     </div>
 
     <!-- Map -->
@@ -31,21 +30,22 @@
 </template>
 
 <script>
-// @ is an alias to /src
 import IPInfo from "../components/IPInfo.vue";
 import leaflet from "leaflet";
 import { onMounted, ref } from "vue";
 import axios from "axios";
 export default {
   name: "HomeView",
-  components: {
-    IPInfo,
-  },
+  components: { IPInfo },
   setup() {
+    // create map variable
     let mymap;
+
+    // data
     const queryIp = ref("");
     const ipInfo = ref(null);
 
+    // mounted lifecycle hook, creates the map
     onMounted(() => {
       mymap = leaflet.map("mapid").setView([42.5145, -83.0147], 9);
 
@@ -66,6 +66,7 @@ export default {
         .addTo(mymap);
     });
 
+    // gets ip information from API
     const getIpInfo = async () => {
       try {
         const data = await axios.get(
@@ -81,11 +82,12 @@ export default {
           lng: result.location.lng,
         };
         leaflet.marker([ipInfo.value.lat, ipInfo.value.lng]).addTo(mymap);
-        mymap.setView([ipInfo.value.lat, ipInfo.value.lng], 9);
+        mymap.setView([ipInfo.value.lat, ipInfo.value.lng], 13);
       } catch (err) {
         alert(err.message);
       }
     };
+
     return { queryIp, ipInfo, getIpInfo };
   },
 };
